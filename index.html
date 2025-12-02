@@ -15,13 +15,13 @@
         /* 3.  Citation Link (in-text) Styling */
         .citation-link {
             font-weight: 500;
-            color: #2563eb; /* Tailwind blue-600 */
+            color: #3b82f6; /* Brighter blue-500 */
             text-decoration: underline;
             text-underline-offset: 2px;
             cursor: pointer;
         }
         .citation-link:hover {
-            color: #1d4ed8; /* Tailwind blue-700 */
+            color: #2563eb; /* Brighter blue-600 */
         }
 
         /* 4. Citation Target (on Citations page) Styling */
@@ -59,10 +59,10 @@
             z-index: -1;
             /* Inset by negative border width */
             inset: -3px; 
-            /* Match the button's rounded-2xl */
-            border-radius: 1rem; 
-            /* The gradient */
-            background: linear-gradient(90deg, #ef4444, #3b82f6); 
+            /* Match the button's new rounded-[2.25rem] */
+            border-radius: 2.25rem; /* This is 36px */
+            /* The gradient (brighter blue: sky-400) */
+            background: linear-gradient(90deg, #ef4444, #38bdf8); 
             /* Start hidden */
             opacity: 0;
             /* Blur it to create the 'halo' */
@@ -78,11 +78,31 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
-        /* 7. Homepage Button Hover Text Color (New) */
+        /* 7. Homepage Button Hover Text Color */
         /* This makes the h3 and p text white on hover */
         .halo-button:hover h3,
         .halo-button:hover p {
             color: #ffffff;
+        }
+
+        /* 8. Animated Gradient Title */
+        .animated-gradient-title {
+          /* We need to make the gradient larger so it can move */
+          background-size: 200% auto;
+          /* Apply the animation (3s cycle) */
+          animation: fast-gradient-shift 3s linear infinite;
+        }
+
+        @keyframes fast-gradient-shift {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
         }
     </style>
 </head>
@@ -93,9 +113,9 @@
         <header class="bg-white shadow-sm sticky top-0 z-50">
             <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
-                    <!-- Site Title (Task 1: Larger & Gradient) -->
+                    <!-- Site Title (Updated to match animated gradient) -->
                     <div class="flex-shrink-0 flex items-center">
-                        <h1 class="text-3xl font-bold bg-gradient-to-r from-red-500 to-blue-600 bg-clip-text text-transparent">我国自然资源分布</h1>
+                        <h1 class="animated-gradient-title text-3xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 via-pink-500 to-orange-500 bg-clip-text text-transparent">我国自然资源分布</h1>
                     </div>
                     <!-- Navigation Links (Desktop) -->
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
@@ -154,30 +174,28 @@
     <!-- JAVASCRIPT LOGIC -->
     <script>
         // --- 1. PAGE CONTENT STORE ---
-        // We store the HTML for each "page" in an object, based on website_plan.md
+        // We store the HTML for each "page" in an object, based on the new docx file
         const pages = {
             'home': `
-                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md">
-                    <!-- Task 1: Make homepage title large and gradient -->
-                    <h2 class="text-5xl font-bold bg-gradient-to-r from-red-500 to-blue-600 bg-clip-text text-transparent text-center mb-10">我国自然资源分布</h2>
+                <div class="bg-white p-6 sm:p-8 rounded-[2.25rem] shadow-md">
+                    <h2 class="animated-gradient-title text-5xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 via-pink-500 to-orange-500 bg-clip-text text-transparent text-center mb-10">我国自然资源分布</h2>
                     <p class="text-lg text-gray-700 leading-relaxed mb-6">
                         中国是一个资源大国，拥有丰富多样的自然资源。但这些资源却不是均匀分布的，了解它们的特点对我们国家的发展非常重要。因此，这个网站会带你一起探索中国主要自然资源（水、土地、矿产、海洋）的分布情况和相关知识。
                     </p>
-                    <!-- Task 2 & 3: Updated Hover Effect -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <a href="#water" class="halo-button block p-6 bg-blue-50 hover:bg-blue-700 rounded-2xl shadow-sm transition">
+                        <a href="#water" class="halo-button block p-6 bg-blue-50 hover:bg-sky-500 rounded-[2.25rem] shadow-sm transition">
                             <h3 class="text-xl font-semibold text-blue-700 transition">水资源</h3>
                             <p class="text-gray-600 mt-2 transition">了解水资源的定义、时空分布和重点案例。</p>
                         </a>
-                        <a href="#land" class="halo-button block p-6 bg-green-50 hover:bg-green-700 rounded-2xl shadow-sm transition">
+                        <a href="#land" class="halo-button block p-6 bg-green-50 hover:bg-green-600 rounded-[2.25rem] shadow-sm transition">
                             <h3 class="text-xl font-semibold text-green-700 transition">土地资源</h3>
                             <p class="text-gray-600 mt-2 transition">探索土地的类型、分布特点和相关工程。</p>
                         </a>
-                        <a href="#minerals" class="halo-button block p-6 bg-gray-50 hover:bg-gray-700 rounded-2xl shadow-sm transition">
+                        <a href="#minerals" class="halo-button block p-6 bg-gray-50 hover:bg-gray-600 rounded-[2.25rem] shadow-sm transition">
                             <h3 class="text-xl font-semibold text-gray-700 transition">矿产资源</h3>
                             <p class="text-gray-600 mt-2 transition">发现能源、金属、非金属矿产的分布。</p>
                         </a>
-                        <a href="#marine" class="halo-button block p-6 bg-indigo-50 hover:bg-indigo-700 rounded-2xl shadow-sm transition">
+                        <a href="#marine" class="halo-button block p-6 bg-indigo-50 hover:bg-indigo-600 rounded-[2.25rem] shadow-sm transition">
                             <h3 class="text-xl font-semibold text-indigo-700 transition">海洋资源</h3>
                             <p class="text-gray-600 mt-2 transition">认识海洋生物、油气和化学资源。</p>
                         </a>
@@ -185,8 +203,8 @@
                 </div>
             `,
             'water': `
-                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md space-y-8">
-                    <h2 class="text-3xl font-bold text-blue-700">水资源</h2>
+                <div class="bg-white p-6 sm:p-8 rounded-[2.25rem] shadow-md space-y-8">
+                    <h2 class="text-3xl font-bold text-sky-600">水资源</h2>
                     
                     <!-- 定义/类型 -->
                     <div>
@@ -202,7 +220,7 @@
                         <div class="space-y-4">
                             <p class="text-lg text-gray-700 leading-relaxed"><strong>时间：</strong>我国水资源在时间上分布很不均匀。正如课本中所说：“我国水资源年内变化明显，夏秋季比较丰富，冬春季相对不足。我国水资源总量年际变化比较大，有些年份偏多，有些年份偏少。”<a href="#citations#cite1" class="citation-link">[1]</a> 这导致了旱涝灾害的频繁发生。</p>
                             <p class="text-lg text-gray-700 leading-relaxed"><strong>空间：</strong>空间分布上，我国水资源呈现出“南多北少，东多西少”的格局。课本中也明确指出：“我国水资源的空间分布极不平衡...秦岭─淮河以南的亚热带与热带季风气候区，水资源特别丰富，以北的温带季风气候区，则相对较少。”<a href="#citations#cite1" class="citation-link">[1]</a></p>
-                            <!-- Task 2: Rounded Edges -->
+                            <!-- Task: Rounded Edges (2xl) & Multiple Images -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                                 <img src="https://i.postimg.cc/ZYvWD0Fn/image.png" alt="中国水资源空间分布图 1" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E2E8F0/64748B?text=中国水资源空间分布图 1';">
                                 <img src="https://i.postimg.cc/PqHbdYyM/image.png" alt="中国水资源空间分布图 2" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E2E8F0/64748B?text=中国水资源空间分布图 2';">
@@ -210,7 +228,7 @@
                         </div>
                     </div>
 
-                    <!-- 重点案例 (Task 4: Content Update) -->
+                    <!-- 重点案例 -->
                     <div>
                         <h3 class="text-2xl font-semibold text-gray-900 mb-3">重点案例：南水北调工程</h3>
                         <div class="text-lg text-gray-700 leading-relaxed mb-4 space-y-4">
@@ -230,7 +248,7 @@
                 </div>
             `,
             'land': `
-                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md space-y-8">
+                <div class="bg-white p-6 sm:p-8 rounded-[2.25rem] shadow-md space-y-8">
                     <h2 class="text-3xl font-bold text-green-700">土地资源</h2>
                     
                     <!-- 定义/类型 -->
@@ -262,14 +280,14 @@
                 </div>
             `,
             'minerals': `
-                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md space-y-8">
+                <div class="bg-white p-6 sm:p-8 rounded-[2.25rem] shadow-md space-y-8">
                     <h2 class="text-3xl font-bold text-gray-700">矿产资源</h2>
                     
                     <!-- 定义/类型 -->
                     <div>
                         <h3 class="text-2xl font-semibold text-gray-900 mb-3">定义/类型</h3>
                         <p class="text-lg text-gray-700 leading-relaxed">
-                            矿产资源是工业的“粮食”。教科书中的定义是：“矿产资源指埋藏在地下或出露于地表，由地质作用形成的，可供人类利用的天然矿物。”<a href="#citations#cite1" class="citation-link">[1']</a> 主要分为能源矿产（如煤、石油）、金属矿产（如铁、铜）和非金属矿产（如稀土、磷）。
+                            矿产资源是工业的“粮食”。教科书中的定义是：“矿产资源指埋藏在地下或出露于地表，由地质作用形成的，可供人类利用的天然矿物。”<a href="#citations#cite1" class="citation-link">[1]</a> 主要分为能源矿产（如煤、石油）、金属矿产（如铁、铜）和非金属矿产（如稀土、磷）。
                         </p>
                     </div>
 
@@ -279,11 +297,13 @@
                         <div class="space-y-4">
                             <p class="text-lg text-gray-700 leading-relaxed"><strong>时间：</strong>矿产资源本身没有季节变化，但它们的开采活动会受季节影响。例如，北方的露天煤矿在冬季可能因严寒天气而难以作业；在多雨的夏季，矿山地区需要特别防范由暴雨引发的滑坡和泥石流等地质灾害。</p>
                             <p class="text-lg text-gray-700 leading-relaxed"><strong>空间：</strong>我国矿产资源分布极不均衡。教科书提到：“我国的能源矿产资源主要集中分布在山西、新疆、陕西、四川、内蒙古等少数几个省区。”<a href="#citations#cite1" class="citation-link">[1]</a> 同时，“金属矿产、非金属矿产资源...分布不均”。<a href="#citations#cite1" class="citation-link">[1]</a> 例如，煤炭资源“北多南少”，而有色金属则是“南多北少”。</p>
-                            <!-- Task 2: Rounded Edges -->
+                            <!-- Task: Rounded Edges (2xl) & Multiple Images -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                                 <img src="https://i.postimg.cc/W3xgfH9x/image.png" alt="中国铁矿、磷矿、锂矿主要省区储量占比" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https://placehold.co/400x300/E2E8F0/64748B?text=中国铁矿、磷矿、锂矿...';">
                                 <img src="https://i.postimg.cc/N0Wrpdkt/image.png" alt="我国主要能源矿产分布图" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https://placehold.co/400x300/E2E8F0/64748B?text=我国主要能源矿产分布图';">
-                                <img src="https://i.postimg.cc/ZYLCdb2b/image.png" alt="我国主要非金属矿产分布图" class="w-full rounded-2xl shadow-sm border md:col-span-2 md:max-w-xl md:mx-auto" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E2E8F0/64748B?text=我国主要非金属矿产分布图';">
+                            </div>
+                            <div class="pt-4">
+                                <img src="https://i.postimg.cc/ZYLCdb2b/image.png" alt="我国主要非金属矿产分布图" class="w-full max-w-2xl mx-auto rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E2E8F0/64748B?text=我国主要非金属矿产分布图';">
                             </div>
                         </div>
                     </div>
@@ -300,7 +320,7 @@
                 </div>
             `,
             'marine': `
-                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md space-y-8">
+                <div class="bg-white p-6 sm:p-8 rounded-[2.25rem] shadow-md space-y-8">
                     <h2 class="text-3xl font-bold text-indigo-700">海洋资源</h2>
                     
                     <!-- 定义/类型 -->
@@ -317,9 +337,9 @@
                         <div class="space-y-4">
                             <p class="text-lg text-gray-700 leading-relaxed"><strong>时间：</strong>海洋资源的利用受季节影响明显。例如，为了保护鱼类繁殖，我国会实行季节性的“休渔期”。教科书中提到：“为了让鱼群更好地繁衍和生长，从1995年开始，我国实行海洋休渔制度。”<a href="#citations#cite1" class="citation-link">[1]</a> 此外，夏秋季节的台风会严重影响海上作业。</p>
                             <p class="text-lg text-gray-700 leading-relaxed"><strong>空间：</strong>我国拥有渤海、黄海、东海和南海四大海域。课本指出：“我国已经在渤海、黄海、东海、南海东部和西部建成多个油气生产基地。”<a href="#citations#cite1" class="citation-link">[1]</a> 同时，东海和南海是重要的渔场，而渤海沿岸则是海盐的主产区。</p>
-                            <!-- Task 2: Rounded Edges -->
+                            <!-- Task: Rounded Edges (2xl) & Multiple Images -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-                                <img src="https://i.postimg.cc/nLgG6rMx/image.png" alt="我国近海主要油气田分布示意" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='httpshttps://placehold.co/400x300/E2E8F0/64748B?text=我国近海主要油气田...';">
+                                <img src="https://i.postimg.cc/nLgG6rMx/image.png" alt="我国近海主要油气田分布示意" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https://placehold.co/400x300/E2E8F0/64748B?text=我国近海主要油气田...';">
                                 <img src="https://i.postimg.cc/fbg1F9VS/image.png" alt="我国的深海探索示意图" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='httpsS://placehold.co/400x300/E2E8F0/64748B?text=我国的深海探索示意图';">
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
@@ -342,7 +362,7 @@
                 </div>
             `,
             'citations': `
-                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md">
+                <div class="bg-white p-6 sm:p-8 rounded-[2.25rem] shadow-md">
                     <h2 class="text-3xl font-bold text-gray-900 mb-6">引用 (Works Cited)</h2>
                     <p class="text-lg text-gray-700 mb-2">格式: MLA (按照教科书规范)</p>
                     <p class="text-md text-gray-600 mb-6">点击页面中的 <a class="citation-link">[编号]</a> 即可跳转至此。</p>
@@ -361,7 +381,7 @@
                 </div>
             `,
             'ai-note': `
-                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md">
+                <div class="bg-white p-6 sm:p-8 rounded-[2.25rem] shadow-md">
                     <h2 class="text-3xl font-bold text-gray-900 mb-6">AI 使用说明</h2>
                     <div class="text-lg text-gray-700 leading-relaxed space-y-4">
                         <p><strong class="font-semibold">使用AI工具：</strong>用来编程HTML网站，MLA格式生成。</p>
