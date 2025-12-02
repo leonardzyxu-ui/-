@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我国自然资源分布</title>
+    <!-- 1. 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 2. 设置 Inter 字体 */
+        html {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+
+        /* 3.  Citation Link (in-text) Styling */
+        .citation-link {
+            font-weight: 500;
+            color: #2563eb; /* Tailwind blue-600 */
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            cursor: pointer;
+        }
+        .citation-link:hover {
+            color: #1d4ed8; /* Tailwind blue-700 */
+        }
+
+        /* 4. Citation Target (on Citations page) Styling */
+        #citations-list li:target {
+            animation: highlight 2.5s ease-out;
+            background-color: #fefce8; /* yellow-50 */
+            border-left: 4px solid #facc15; /* yellow-400 */
+            padding-left: 1rem; /* pl-4 */
+            margin-top: 8px;
+            margin-bottom: 8px;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        /* 5. Highlight Animation */
+        @keyframes highlight {
+            from {
+                background-color: #fef08a; /* yellow-200 */
+            }
+            to {
+                background-color: #fefce8; /* yellow-50 */
+            }
+        }
+        
+        /* 6. Homepage Button Halo Effect */
+        .halo-button {
+            position: relative;
+            z-index: 0; /* Create stacking context */
+            /* Make the background color transition smooth */
+            transition: all 0.3s ease-in-out;
+        }
+        .halo-button::before {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            /* Inset by negative border width */
+            inset: -3px; 
+            /* Match the button's rounded-2xl */
+            border-radius: 1rem; 
+            /* The gradient */
+            background: linear-gradient(90deg, #ef4444, #3b82f6); 
+            /* Start hidden */
+            opacity: 0;
+            /* Blur it to create the 'halo' */
+            filter: blur(10px);
+            transition: opacity 0.3s ease-in-out;
+        }
+        .halo-button:hover::before {
+            opacity: 1;
+        }
+        /* Add a subtle lift effect */
+        .halo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        /* 7. Homepage Button Hover Text Color (New) */
+        /* This makes the h3 and p text white on hover */
+        .halo-button:hover h3,
+        .halo-button:hover p {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+    <div class="min-h-screen w-full">
+        <!-- HEADER & NAVIGATION BAR -->
+        <header class="bg-white shadow-sm sticky top-0 z-50">
+            <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <!-- Site Title (Task 1: Larger & Gradient) -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <h1 class="text-3xl font-bold bg-gradient-to-r from-red-500 to-blue-600 bg-clip-text text-transparent">我国自然资源分布</h1>
+                    </div>
+                    <!-- Navigation Links (Desktop) -->
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="#home" class="nav-link inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">首页</a>
+                        <a href="#water" class="nav-link inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">水资源</a>
+                        <a href="#land" class="nav-link inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">土地资源</a>
+                        <a href="#minerals" class="nav-link inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">矿产资源</a>
+                        <a href="#marine" class="nav-link inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">海洋资源</a>
+                        <a href="#citations" class="nav-link inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">引用</a>
+                        <a href="#ai-note" class="nav-link inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">AI 使用说明</a>
+                    </div>
+                    <!-- Mobile Menu Button -->
+                    <div class="-mr-2 flex items-center sm:hidden">
+                        <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-controls="mobile-menu" aria-expanded="false">
+                            <span class="sr-only">Open main menu</span>
+                            <!-- Icon for menu closed -->
+                            <svg id="menu-icon-closed" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            <!-- Icon for menu open -->
+                            <svg id="menu-icon-open" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+            <!-- Mobile Menu, shows/hides based on menu state. -->
+            <div class="hidden sm:hidden" id="mobile-menu">
+                <div class="pt-2 pb-3 space-y-1">
+                    <a href="#home" class="mobile-nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800">首页</a>
+                    <a href="#water" class="mobile-nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800">水资源</a>
+                    <a href="#land" class="mobile-nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800">土地资源</a>
+                    <a href="#minerals" class="mobile-nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800">矿产资源</a>
+                    <a href="#marine" class="mobile-nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800">海洋资源</a>
+                    <a href="#citations" class="mobile-nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800">引用</a>
+                    <a href="#ai-note" class="mobile-nav-link block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800">AI 使用说明</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT AREA -->
+        <main id="content" class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+            <!-- Content will be injected here -->
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="bg-white border-t border-gray-200">
+            <div class="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-500">
+                <p>&copy; 2025 我国自然资源分布. All rights reserved.</p>
+                <p class="mt-1">根据《义务教育教科书》内容整理</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- 1. PAGE CONTENT STORE ---
+        // We store the HTML for each "page" in an object, based on website_plan.md
+        const pages = {
+            'home': `
+                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md">
+                    <!-- Task 1: Make homepage title large and gradient -->
+                    <h2 class="text-5xl font-bold bg-gradient-to-r from-red-500 to-blue-600 bg-clip-text text-transparent text-center mb-10">我国自然资源分布</h2>
+                    <p class="text-lg text-gray-700 leading-relaxed mb-6">
+                        中国是一个资源大国，拥有丰富多样的自然资源。但这些资源却不是均匀分布的，了解它们的特点对我们国家的发展非常重要。因此，这个网站会带你一起探索中国主要自然资源（水、土地、矿产、海洋）的分布情况和相关知识。
+                    </p>
+                    <!-- Task 2 & 3: Updated Hover Effect -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <a href="#water" class="halo-button block p-6 bg-blue-50 hover:bg-blue-700 rounded-2xl shadow-sm transition">
+                            <h3 class="text-xl font-semibold text-blue-700 transition">水资源</h3>
+                            <p class="text-gray-600 mt-2 transition">了解水资源的定义、时空分布和重点案例。</p>
+                        </a>
+                        <a href="#land" class="halo-button block p-6 bg-green-50 hover:bg-green-700 rounded-2xl shadow-sm transition">
+                            <h3 class="text-xl font-semibold text-green-700 transition">土地资源</h3>
+                            <p class="text-gray-600 mt-2 transition">探索土地的类型、分布特点和相关工程。</p>
+                        </a>
+                        <a href="#minerals" class="halo-button block p-6 bg-gray-50 hover:bg-gray-700 rounded-2xl shadow-sm transition">
+                            <h3 class="text-xl font-semibold text-gray-700 transition">矿产资源</h3>
+                            <p class="text-gray-600 mt-2 transition">发现能源、金属、非金属矿产的分布。</p>
+                        </a>
+                        <a href="#marine" class="halo-button block p-6 bg-indigo-50 hover:bg-indigo-700 rounded-2xl shadow-sm transition">
+                            <h3 class="text-xl font-semibold text-indigo-700 transition">海洋资源</h3>
+                            <p class="text-gray-600 mt-2 transition">认识海洋生物、油气和化学资源。</p>
+                        </a>
+                    </div>
+                </div>
+            `,
+            'water': `
+                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md space-y-8">
+                    <h2 class="text-3xl font-bold text-blue-700">水资源</h2>
+                    
+                    <!-- 定义/类型 -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-3">定义/类型</h3>
+                        <p class="text-lg text-gray-700 leading-relaxed">
+                            水资源通常指可供人类利用的淡水资源。我们的教科书中提到：“水资源通常指淡水资源，是可被利用或有可能被利用的水源。水资源主要包括冰川、永久积雪、淡水湖泊水、河流水和地下淡水。”<a href="#citations#cite1" class="citation-link">[1]</a>
+                        </p>
+                    </div>
+
+                    <!-- 分布特点 -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-3">分布特点</h3>
+                        <div class="space-y-4">
+                            <p class="text-lg text-gray-700 leading-relaxed"><strong>时间：</strong>我国水资源在时间上分布很不均匀。正如课本中所说：“我国水资源年内变化明显，夏秋季比较丰富，冬春季相对不足。我国水资源总量年际变化比较大，有些年份偏多，有些年份偏少。”<a href="#citations#cite1" class="citation-link">[1]</a> 这导致了旱涝灾害的频繁发生。</p>
+                            <p class="text-lg text-gray-700 leading-relaxed"><strong>空间：</strong>空间分布上，我国水资源呈现出“南多北少，东多西少”的格局。课本中也明确指出：“我国水资源的空间分布极不平衡...秦岭─淮河以南的亚热带与热带季风气候区，水资源特别丰富，以北的温带季风气候区，则相对较少。”<a href="#citations#cite1" class="citation-link">[1]</a></p>
+                            <!-- Task 2: Rounded Edges -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                                <img src="https://i.postimg.cc/ZYvWD0Fn/image.png" alt="中国水资源空间分布图 1" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E2E8F0/64748B?text=中国水资源空间分布图 1';">
+                                <img src="https://i.postimg.cc/PqHbdYyM/image.png" alt="中国水资源空间分布图 2" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E2E8F0/64748B?text=中国水资源空间分布图 2';">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 重点案例 (Task 4: Content Update) -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-3">重点案例：南水北调工程</h3>
+                        <div class="text-lg text-gray-700 leading-relaxed mb-4 space-y-4">
+                            <p>这是为了解决中国北方严重缺水问题而建设的重大战略工程。它从开始筹备至今已有超过70 年，且依然在进行。</p>
+                            <p>教科书上写道：“修建跨流域调水工程是解决我国水资源空间分布不均的有效措施。例如，南水北调工程的建成，有效缓解了我国北方水资源短缺问题。”<a href="#citations#cite1" class="citation-link">[1]</a></p>
+                            <p>它分为东线、中线和西线三条调水线路，把长江流域丰富的水资源调配到缺水的北方地区（如北京、天津）。其中，西线工程依然在筹备阶段。</p>
+                            <p>这项工程体现了中国人解决自然资源空间分布不均问题的强大能力，主要通过以下方式：</p>
+                            <ul class="list-disc list-inside pl-4">
+                                <li>以人工工程的手段</li>
+                                <li>跨流域调配水资源</li>
+                                <li>合理利用和调度水资源</li>
+                            </ul>
+                            <a href="#citations#cite3" class="citation-link">[3]</a>
+                        </div>
+                        <img src="https://i.postimg.cc/Wb2d8VS4/image.png" alt="南水北调工程路线图" class="w-full max-w-2xl mx-auto rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E2E8F0/64748B?text=南水北调工程路线图';">
+                    </div>
+                </div>
+            `,
+            'land': `
+                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md space-y-8">
+                    <h2 class="text-3xl font-bold text-green-700">土地资源</h2>
+                    
+                    <!-- 定义/类型 -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-3">定义/类型</h3>
+                        <p class="text-lg text-gray-700 leading-relaxed">
+                            土地是宝贵的自然资源。根据教科书：“我国土地资源类型齐全，包括耕地、林地、草地、湿地、园地、交通运输用地、城镇村及工矿用地、水域及水利设施用地。”<a href="#citations#cite1" class="citation-link">[1]</a>
+                        </p>
+                    </div>
+
+                    <!-- 分布特点 -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-3">分布特点</h3>
+                        <div class="space-y-4">
+                            <p class="text-lg text-gray-700 leading-relaxed"><strong>时间：</strong>土地资源的利用有很强的季节性。例如，北方的耕地（如东北平原）受气温限制，一年只能收获一次（一年一熟）；而南方的耕地（如长江中下游平原）水热条件好，一年可以收获两次甚至三次（一年两熟或三熟）。<a href="#citations#cite1" class="citation-link">[1]</a></p>
+                            <p class="text-lg text-gray-700 leading-relaxed"><strong>空间：</strong>空间上，我国土地资源分布呈现“东耕西牧”的特点。在东部季风区，平原多，雨水多，以耕地为主；而西部和北部内陆地区降水少，以草原和牧区为主。正如课本在描述农业分布时提到的：“此线以东，是我国粮食作物...主产区。此线以西，天然草场资源丰富，牧业是传统农业部门。”<a href="#citations#cite1" class="citation-link">[1]</a></p>
+                            <img src="https://i.postimg.cc/PJ6vZVgm/image.png" alt="我国土地利用类型" class="w-full max-w-2xl mx-auto rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E2E8F0/64748B?text=我国土地利用类型';">
+                        </div>
+                    </div>
+
+                    <!-- 案例 -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-3">案例</h3>
+                        <ul class="list-disc list-inside text-lg text-gray-700 space-y-2">
+                            <li>三北防护林体系工程</li>
+                            <li>退耕还林还草工程</li>
+                        </ul>
+                    </div>
+                </div>
+            `,
+            'minerals': `
+                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md space-y-8">
+                    <h2 class="text-3xl font-bold text-gray-700">矿产资源</h2>
+                    
+                    <!-- 定义/类型 -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-3">定义/类型</h3>
+                        <p class="text-lg text-gray-700 leading-relaxed">
+                            矿产资源是工业的“粮食”。教科书中的定义是：“矿产资源指埋藏在地下或出露于地表，由地质作用形成的，可供人类利用的天然矿物。”<a href="#citations#cite1" class="citation-link">[1']</a> 主要分为能源矿产（如煤、石油）、金属矿产（如铁、铜）和非金属矿产（如稀土、磷）。
+                        </p>
+                    </div>
+
+                    <!-- 分布特点 -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-3">分布特点</h3>
+                        <div class="space-y-4">
+                            <p class="text-lg text-gray-700 leading-relaxed"><strong>时间：</strong>矿产资源本身没有季节变化，但它们的开采活动会受季节影响。例如，北方的露天煤矿在冬季可能因严寒天气而难以作业；在多雨的夏季，矿山地区需要特别防范由暴雨引发的滑坡和泥石流等地质灾害。</p>
+                            <p class="text-lg text-gray-700 leading-relaxed"><strong>空间：</strong>我国矿产资源分布极不均衡。教科书提到：“我国的能源矿产资源主要集中分布在山西、新疆、陕西、四川、内蒙古等少数几个省区。”<a href="#citations#cite1" class="citation-link">[1]</a> 同时，“金属矿产、非金属矿产资源...分布不均”。<a href="#citations#cite1" class="citation-link">[1]</a> 例如，煤炭资源“北多南少”，而有色金属则是“南多北少”。</p>
+                            <!-- Task 2: Rounded Edges -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                                <img src="https://i.postimg.cc/W3xgfH9x/image.png" alt="中国铁矿、磷矿、锂矿主要省区储量占比" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https://placehold.co/400x300/E2E8F0/64748B?text=中国铁矿、磷矿、锂矿...';">
+                                <img src="https://i.postimg.cc/N0Wrpdkt/image.png" alt="我国主要能源矿产分布图" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https://placehold.co/400x300/E2E8F0/64748B?text=我国主要能源矿产分布图';">
+                                <img src="https://i.postimg.cc/ZYLCdb2b/image.png" alt="我国主要非金属矿产分布图" class="w-full rounded-2xl shadow-sm border md:col-span-2 md:max-w-xl md:mx-auto" onerror="this.onerror=null;this.src='https://placehold.co/600x400/E2E8F0/64748B?text=我国主要非金属矿产分布图';">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 案例 -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-3">案例</h3>
+                        <ul class="list-disc list-inside text-lg text-gray-700 space-y-2">
+                            <li>西气东输工程 (将西部的天然气输送到东部)</li>
+                            <li>大庆油田 (我国重要的石油生产基地)</li>
+                            <li>攀枝花钢铁基地 (依靠当地丰富的铁矿资源)</li>
+                        </ul>
+                    </div>
+                </div>
+            `,
+            'marine': `
+                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md space-y-8">
+                    <h2 class="text-3xl font-bold text-indigo-700">海洋资源</h2>
+                    
+                    <!-- 定义/类型 -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-3">定义/类型</h3>
+                        <p class="text-lg text-gray-700 leading-relaxed">
+                            海洋资源是指与海洋相关的所有自然资源。这包括海洋生物资源（如鱼类、贝类）、海洋油气资源、海洋化学资源（如海盐）以及海洋可再生能源（如潮汐能、风能）。<a href="#citations#cite1" class="citation-link">[1]</a>
+                        </p>
+                    </div>
+
+                    <!-- 分布特点 -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-3">分布特点</h3>
+                        <div class="space-y-4">
+                            <p class="text-lg text-gray-700 leading-relaxed"><strong>时间：</strong>海洋资源的利用受季节影响明显。例如，为了保护鱼类繁殖，我国会实行季节性的“休渔期”。教科书中提到：“为了让鱼群更好地繁衍和生长，从1995年开始，我国实行海洋休渔制度。”<a href="#citations#cite1" class="citation-link">[1]</a> 此外，夏秋季节的台风会严重影响海上作业。</p>
+                            <p class="text-lg text-gray-700 leading-relaxed"><strong>空间：</strong>我国拥有渤海、黄海、东海和南海四大海域。课本指出：“我国已经在渤海、黄海、东海、南海东部和西部建成多个油气生产基地。”<a href="#citations#cite1" class="citation-link">[1]</a> 同时，东海和南海是重要的渔场，而渤海沿岸则是海盐的主产区。</p>
+                            <!-- Task 2: Rounded Edges -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                                <img src="https://i.postimg.cc/nLgG6rMx/image.png" alt="我国近海主要油气田分布示意" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='httpshttps://placehold.co/400x300/E2E8F0/64748B?text=我国近海主要油气田...';">
+                                <img src="https://i.postimg.cc/fbg1F9VS/image.png" alt="我国的深海探索示意图" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='httpsS://placehold.co/400x300/E2E8F0/64748B?text=我国的深海探索示意图';">
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+                                <img src="https://i.postimg.cc/Pr2y2kpp/image.png" alt="海洋资源开发利用 1" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https://placehold.co/400x300/E2E8F0/64748B?text=海洋资源开发利用 1';">
+                                <img src="https://i.postimg.cc/nVwMkRVj/image.png" alt="海洋资源开发利用 2" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https://placehold.co/400x300/E2E8F0/64748B?text=海洋资源开发利用 2';">
+                                <img src="https://i.postimg.cc/bJwN0bKp/2025-11-21-21-40-12.png" alt="海洋资源开发利用 3" class="w-full rounded-2xl shadow-sm border" onerror="this.onerror=null;this.src='https:**//placehold.co/400x300/E2E8F0/64748B?text=海洋资源开发利用 3';">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 案例 -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-3">案例</h3>
+                        <ul class="list-disc list-inside text-lg text-gray-700 space-y-2">
+                            <li>“蛟龙号”载人潜水器 (用于深海科学考察)</li>
+                            <li>海上风电场建设 (开发海洋可再生能源)</li>
+                            <li>海洋石油981钻井平台 (开采海洋油气资源)</li>
+                        </ul>
+                    </div>
+                </div>
+            `,
+            'citations': `
+                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">引用 (Works Cited)</h2>
+                    <p class="text-lg text-gray-700 mb-2">格式: MLA (按照教科书规范)</p>
+                    <p class="text-md text-gray-600 mb-6">点击页面中的 <a class="citation-link">[编号]</a> 即可跳转至此。</p>
+                    
+                    <ul id="citations-list" class="space-y-4">
+                        <li id="cite1" class="text-lg text-gray-700 leading-relaxed transition-all duration-300 rounded-md">
+                            <span class="font-semibold">[1]</span> 《义务教育教科书 地理 七年级 上册》。中华地图学社，中国地图出版社，2024年。
+                        </li>
+                        <li id="cite2" class="text-lg text-gray-700 leading-relaxed transition-all duration-300 rounded-md">
+                            <span class="font-semibold">[2]</span> 《义务教育教科书 地理图册 七年级 上册》。中华地图学社，中国地图出版社，2024年。
+                        </li>
+                        <li id="cite3" class="text-lg text-gray-700 leading-relaxed transition-all duration-300 rounded-md">
+                            <span class="font-semibold">[3]</span> 《水资源》。[教师课堂演示文稿]。
+                        </li>
+                    </ul>
+                </div>
+            `,
+            'ai-note': `
+                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">AI 使用说明</h2>
+                    <div class="text-lg text-gray-700 leading-relaxed space-y-4">
+                        <p><strong class="font-semibold">使用AI工具：</strong>用来编程HTML网站，MLA格式生成。</p>
+                        <p><strong class="font-semibold">我使用的AI工具是：</strong>Gemini Pro</p>
+                        <p class="mt-6 italic">我已亲自核实所有数据的真实性，案例分析部分由我独立完成。</p>
+                    </div>
+                </div>
+            `
+        };
+
+        // --- 2. DOM ELEMENT REFERENCES ---
+        const contentDiv = document.getElementById('content');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIconOpen = document.getElementById('menu-icon-open');
+        const menuIconClosed = document.getElementById('menu-icon-closed');
+
+        let activePage = '';
+
+        // --- 3. CORE NAVIGATION FUNCTIONS ---
+
+        /**
+         * Renders the content of a specific page into the main content div.
+         * @param {string} pageName - The key of the page in the `pages` object.
+         */
+        function renderPage(pageName) {
+            // Fix: Allow home to re-render if it's the only page (hash is empty)
+            if (pageName === activePage && window.location.hash) return; 
+
+            const pageContent = pages[pageName] || pages['home'];
+            contentDiv.innerHTML = pageContent;
+            activePage = pageName;
+
+            updateActiveNavLinks(pageName);
+            closeMobileMenu();
+        }
+
+        /**
+         * Updates the "active" state visuals for navigation links.
+         * @param {string} pageName - The name of the currently active page.
+         */
+        function updateActiveNavLinks(pageName) {
+            const activeClasses = 'border-blue-500 text-gray-900';
+            const inactiveClasses = 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700';
+            
+            navLinks.forEach(link => {
+                if (link.hash === `#${pageName}`) {
+                    link.className = link.className.replace(inactiveClasses, activeClasses);
+                } else {
+                    link.className = link.className.replace(activeClasses, inactiveClasses);
+                }
+            });
+
+            const mobileActiveClasses = 'bg-blue-50 border-blue-500 text-blue-700';
+            const mobileInactiveClasses = 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800';
+
+            mobileNavLinks.forEach(link => {
+                if (link.hash === `#${pageName}`) {
+                    link.className = link.className.replace(mobileInactiveClasses, mobileActiveClasses);
+                } else {
+                    link.className = link.className.replace(mobileActiveClasses, mobileInactiveClasses);
+                }
+            });
+        }
+
+        /**
+         * Main router function. Reads the URL hash and renders the correct page and/or scrolls to an anchor.
+         */
+        function handleHashChange() {
+            // Get the full hash (e.g., "#citations#cite1")
+            const hash = window.location.hash;
+
+            // Split by '#'
+            // e.g., "#citations#cite1" -> ["", "citations", "cite1"]
+            // e.g., "#water" -> ["", "water"]
+            // e.g., "" -> [""]
+            const parts = hash.split('#');
+            
+            // Get the page name. Default to 'home'.
+            const pageName = parts[1] || 'home';
+            
+            // Get the anchor (if it exists)
+            const anchorId = parts[2] || null;
+
+            // Render the page
+            renderPage(pageName);
+
+            // If there's an anchor, scroll to it after a short delay
+            // to ensure the content is rendered.
+            if (anchorId) {
+                setTimeout(() => {
+                    const element = document.getElementById(anchorId);
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 100); // 100ms delay
+            } else {
+                // If no anchor, scroll to top of page
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // --- 4. MOBILE MENU TOGGLE ---
+        function toggleMobileMenu() {
+            const isMenuOpen = !mobileMenu.classList.contains('hidden');
+            if (isMenuOpen) {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
+            }
+        }
+
+        function openMobileMenu() {
+            mobileMenu.classList.remove('hidden');
+            menuIconClosed.classList.add('hidden');
+            menuIconOpen.classList.remove('hidden');
+            mobileMenuButton.setAttribute('aria-expanded', 'true');
+        }
+        
+        function closeMobileMenu() {
+            mobileMenu.classList.add('hidden');
+            menuIconClosed.classList.remove('hidden');
+            menuIconOpen.classList.add('hidden');
+            mobileMenuButton.setAttribute('aria-expanded', 'false');
+        }
+
+        // --- 5. EVENT LISTENERS & INITIALIZATION ---
+
+        // Setup mobile menu toggle
+        mobileMenuButton.addEventListener('click', toggleMobileMenu);
+
+        // Listen for changes to the URL hash (clicks, back/forward buttons)
+        window.addEventListener('hashchange', handleHashChange);
+        
+        // Handle initial page load RIGHT NOW
+        // This is the fix for the "white screen"
+        handleHashChange();
+
+    </script>
+</body>
+</html>
